@@ -8,6 +8,7 @@ trait Command {
 
 object Command {
   val MKDIR = "mkdir"
+  val LS = "ls"
 
   def emptyCommand: Command =
     (state: State) => state
@@ -23,7 +24,7 @@ object Command {
       if (tokens.length < 2) incompleteCommand(MKDIR)
       else new Mkdir(tokens(1))
     }
-//    else if ("")
+    else if (LS.equals(tokens(0))) new Ls
     else new UnknownCommand
   }
 
