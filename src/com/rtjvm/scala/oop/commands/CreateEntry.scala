@@ -14,7 +14,7 @@ abstract class CreateEntry(name: String) extends Command {
     } else if (checkIllegal(name)) {
       state.setMessage(name + ": is illegal entry name!")
     } else {
-      doCreateEntry(state, name)
+      doCreateEntry(state)
     }
   }
 
@@ -30,7 +30,7 @@ abstract class CreateEntry(name: String) extends Command {
     }
   }
 
-  def doCreateEntry(state: State, name: String): State = {
+  def doCreateEntry(state: State): State = {
     val wd = state.wd
 
     // 1. all the directories in the full path
