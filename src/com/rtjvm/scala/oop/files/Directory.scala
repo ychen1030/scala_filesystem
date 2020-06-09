@@ -33,7 +33,7 @@ class Directory(override val parentPath: String, override val name: String, val 
   }
 
   def replaceEntry(entryName: String, newEntry: DirEntry): Directory =
-    new Directory(parentPath, name, contents.filter(x => x.name.equals(entryName)) :+ newEntry)
+    new Directory(parentPath, name, contents.filter(x => !x.name.equals(entryName)) :+ newEntry)
 
   def isRoot: Boolean = parentPath.isEmpty
 

@@ -40,7 +40,7 @@ class Cd(dir: String) extends Command {
     @tailrec
     def findEntryHelper(currDirectory: Directory, tokens: List[String]): DirEntry = {
       if (tokens.isEmpty || tokens.head.isEmpty) currDirectory
-      else if (path.tail.isEmpty) currDirectory.findEntry(tokens.head)
+      else if (tokens.tail.isEmpty) currDirectory.findEntry(tokens.head)
       else {
         val nextDir = currDirectory.findEntry(tokens.head)
         if (nextDir == null || !nextDir.isDirectory) null
@@ -48,10 +48,23 @@ class Cd(dir: String) extends Command {
       }
     }
 
+    def collapseRelativeTokens(path: List[String], result: List[String]): List[String] = {
+      if (path.isEmpty) result
+      else if (".".equals(path.head)) collapseRelativeTokens(path.tail, result)
+      else if ("..".equals(path.head)) {
+        if (result.isEmpty) null
+        else collapseRelativeTokens(path.tail, result.init)
+      } else collapseRelativeTokens(path.tail, result :+ path.head)
+    }
+
     // 1. tokens
     val tokens: List[String] = path.substring(1).split(Directory.SEPARATOR).toList
 
+    // 1.5 eliminate and collapse relative tokens
+    val newTokens = collapseRelativeTokens(tokens, List())
+
     // 2. navigate to the correct entry
-    findEntryHelper(root, tokens)
+    if (newTokens == null) null
+    else findEntryHelper(root, newTokens)
   }
 }
